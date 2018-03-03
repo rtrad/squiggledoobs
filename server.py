@@ -53,14 +53,14 @@ def index():
     for rec in recordings:
         agg[rec['device_id']]['activity_v'] += rec['activity_v']**2
         agg[rec['device_id']]['count'] += 1
-        
+
     # for dev in agg:
         # agg[dev]['activity_v'] = agg[dev]['activity_v']/agg[dev]['count']
     # print agg
     data = dumps(agg)
     # data[1]
 
-    print data[1]
+    print (data[1])
     return render_template('index.html', data=agg)
 
 

@@ -116,22 +116,23 @@
 
     function determineColor(mag1, mag2, maxMag) {
         var relativeMag = ((mag1 + mag2)/(maxMag * 2));
-        var redVal = Math.floor(0x000000 + (0xFF0000 * relativeMag));
-        var greenVal = Math.floor(0x00FF00 - (0x00FF00 * relativeMag));
-        var finalVal = (redVal + greenVal);
-        if (finalVal < 0x010000) {
-            finalVal = "#00" + finalVal.toString(16);
-        } else if (finalVal < 0x100000) {
-            finalVal = "#0" + finalVal.toString(16);
-        } else {
-            finalVal = "#" + finalVal.toString(16);
-        }
-        console.log(finalVal.slice(0,5)+'00');
-        finalVal = finalVal.slice(0,5)+'00';
+        var redVal = Math.floor(0x00 + (0xFF * relativeMag));
+        var greenVal = Math.floor(0xFF - (0xFF * relativeMag));
+        var finalVal = ("#" + redVal.toString(16) + greenVal.toString(16) + "00");
+        // if (finalVal < 0x010000) {
+        //     finalVal = "#00" + finalVal.toString(16);
+        // } else if (finalVal < 0x100000) {
+        //     finalVal = "#0" + finalVal.toString(16);
+        // } else {
+        //     finalVal = "#" + finalVal.toString(16);
+        // }
+        //
+        // console.log(finalVal.slice(0,5)+'00');
+        // finalVal = finalVal.slice(0,5)+'00';
         console.log("finalVal:" + finalVal);
         console.log("redVal:" + redVal);
         console.log("greenVal:" + greenVal);
-        
+
         return finalVal;
     }
 
