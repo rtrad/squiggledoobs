@@ -10,7 +10,7 @@ recordings = db.recordings
 
 
 def main():
-    ser = serial.Serial('COM8', 115200, timeout=5)
+    ser = serial.Serial('COM11', 115200, timeout=5)
     sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
     
     while(True):
@@ -20,7 +20,7 @@ def main():
                 recording = {
                         'timestamp' : (datetime.datetime.now() - datetime.datetime(1970,1,1)).total_seconds(),
                         'activity_v' : int(activity_v),
-                        'device_id' : 0
+                        'device_id' : 2
                     }
                 print recordings.insert_one(recording)
             except:
