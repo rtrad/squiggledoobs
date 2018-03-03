@@ -14,14 +14,15 @@
     </script>
     <script>
     var map;
+    var maxMag = 0;
 
     var heatmap;
-    var center = {lat:33.769959, lng:-84.363147};
+    var center = {lat:33.775959, lng:-84.363147};
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 15,
-        center: {lat:33.769959, lng:-84.363147}
+        zoom: 16,
+        center: center
       });
       var bikelayer = new google.maps.BicyclingLayer();
       bikelayer.setMap(map);
@@ -37,7 +38,6 @@
       console.log(results);
 
       var heatmapData = [];
-      var maxMag = 1;
 
       Object.keys(results).forEach(function(key){
 
@@ -57,6 +57,7 @@
       });
 
       heatmapView(heatmapData, map);
+      trafficView(heatmapData, map);
 
 
       // Create the DIV to hold the control and call the CenterControl()
@@ -77,11 +78,11 @@
 
         // Create the DIV to hold the control and call the CenterControl()
         // constructor passing in this DIV.
-        var trafficControlDiv = document.createElement('div');
-        var trafficControl = new toggleTraffic(trafficControlDiv, map);
+        //var trafficControlDiv = document.createElement('div');
+        //var trafficControl = new toggleTraffic(trafficControlDiv, map);
 
-        trafficControlDiv.index = 2;
-        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(trafficControlDiv);
+        //trafficControlDiv.index = 2;
+        //map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(trafficControlDiv);
 
 
     }
@@ -92,6 +93,7 @@
         heatmap = new google.maps.visualization.HeatmapLayer({
           data:heatmapData,
           dissipating:true,
+          radius: 100,
           map: map
           });
     }
@@ -103,18 +105,19 @@
               path: [heatmapData[i].location, heatmapData[i + 1].location],
               strokeColor: determineColor(heatmapData[i].weight, heatmapData[i + 1].weight, maxMag), //add in function to determine color based on magnitude
               strokeOpacity: 1.0,
-              strokeWeight: 2
+              strokeWeight: 6
           }));
         }
+        console.log(lines);
         for (var i = 0; i < lines.length; ++i) {
           lines[i].setMap(map);
         }
     }
 
     function determineColor(mag1, mag2, maxMag) {
-        var relativeMag = Math.floor((mag1 + mag2)/(maxMag * 2));
-        var redVal = 0x000000 + (0xFF0000 * relativeMag);
-        var greenVal = 0x00FF00 - (0x00FF00 * relativeMag);
+        var relativeMag = ((mag1 + mag2)/(maxMag * 2));
+        var redVal = Math.floor(0x000000 + (0xFF0000 * relativeMag));
+        var greenVal = Math.floor(0x00FF00 - (0x00FF00 * relativeMag));
         var finalVal = (redVal + greenVal);
         if (finalVal < 0x010000) {
             finalVal = "#00" + finalVal.toString(16);
@@ -123,9 +126,12 @@
         } else {
             finalVal = "#" + finalVal.toString(16);
         }
+        console.log(finalVal.slice(0,5)+'00');
+        finalVal = finalVal.slice(0,5)+'00';
         console.log("finalVal:" + finalVal);
         console.log("redVal:" + redVal);
         console.log("greenVal:" + greenVal);
+        
         return finalVal;
     }
 
@@ -232,7 +238,7 @@
 
         // Setup the click event listeners: simply set the map to Chicago.
         controlUI.addEventListener('click', function() {
-          // heatmap.setMap(heatmap.getMap() ? null : map);
+          trafficmap.setMap(trafficMap.getmap() ? null : map);
         });
 
       }
