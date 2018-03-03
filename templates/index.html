@@ -32,27 +32,49 @@ function initMap() {
   console.log(results);
 
   var heatmapData = [];
+  var maxMag = 0;
 
-  Object.keys(results).forEach(function(key){
-  
-
+  Object.keys(results).forEach(function(key) {
     var latLng = new google.maps.LatLng(results[key].location[0], results[key].location[1])
     var magnitude = results[key].activity_v;
+    if (maxMag < magnitude) {
+        maxMag = magnitude;
+    }
 
     var weightedLoc = {
       location : latLng,
       weight : magnitude
     };
     heatmapData.push(weightedLoc);
-  
+
   });
-  var heatmap = new google.maps.visualization.HeatmapLayer({
+
+  /*var heatmap = new google.maps.visualization.HeatmapLayer({
     data:heatmapData,
     dissipating:true,
     map: map
     });
+  */
+  var lines = [];
+  for (var i = 0; i < heatmapData.length - 1; ++i) {
+    lines.push(new google.maps.Polyline({
+        path: [heatmapData[i].location, heatmapData[i + 1].location],
+        strokeColor: determineColor(heatmapData[i].weight, heatmapData[i + 1].weight, maxMag), //add in function to determine color based on magnitude
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    }));
+  }
+  for (var i = 0; i < lines.length; ++i) {
+    lines[i].setMap(map);
+  }
 }
 
+function determineColor(mag1, mag2, maxMag) {
+    var relativeMag = Math.floor((mag1 + mag2)/(maxMag * 2));
+    var redVal = 0x000000 + (0xFF0000 * relativeMag);
+    var greenVal = 0x00FF00 - (0x00FF00 * relativeMag);
+    return "#" + (redVal + greenVal).toString();
+}
 
 function eqfeed_callback(results) {
   var heatmapData = [];
