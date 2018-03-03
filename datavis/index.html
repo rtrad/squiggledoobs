@@ -6,13 +6,21 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+
+
+    <div id="map"></div>
+
+    <script async defer
+    src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAR8n1NSCAnouGzRyp1dJy15Oh704K3lA0&libraries=visualization&callback=initMap">
+    </script>
+    <p>
+    	Team SquiggleDoobs
+    </p>
+
     <div id="main">
         <svg width="100%" height="740" style="border: 1px solid #777;">
         </svg>
     </div>
-    <p>
-    	Team SquiggleDoobs
-    </p>
 </body>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="./vis.js"></script>
