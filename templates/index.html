@@ -16,10 +16,11 @@
     var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
-    center: {lng:-84.3880 , lat: 33.7490},
-    mapTypeId: 'terrain'
+    zoom: 15,
+    center: {lat:33.769959, lng:-84.363147}
   });
+  var bikelayer = new google.maps.BicyclingLayer();
+  bikelayer.setMap(map);
 
   // Create a <script> tag and set the USGS URL as the source.
   // var script = document.createElement('script');
