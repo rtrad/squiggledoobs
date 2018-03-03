@@ -7,11 +7,16 @@
 
 int device_id = 0;
 
-MeRGBLed led(PORT_3);
+MePIRMotionSensor PIRmotion_val(PORT_3);
 
-MePIRMotionSensor PIRmotion_val(PORT_6);
+MeRGBLed led(PORT_4);
 
 MeBluetooth bluetooth(PORT_5);
+
+MeSoundSensor mySound(PORT_6);
+
+// MeUltrasonicSensor ultraSensor(PORT_7);
+
 
 String test = "test out";
 
@@ -28,21 +33,31 @@ void loop() {
   led.setColorAt(0,0,0,0);
   led.show();
   detected = PIRmotion_val.isHumanDetected();
-  if(detected ) {
-    color();
-    sendBTData();
-  }
+  if(detected) {
+    person();
+  } 
   prev_detected = detected;
 
   delay(100);
 
   
 }
-void sendBTData() {
-  bluetooth.println(device_id);
+/**
+ * A person has been detected
+ * Add to counter
+ * send bluetooth data
+ * how busy is a pass
+**/
+void person() {
+
+  blink();
+  String out = "";
+  out += mySound.strength();
+
+  bluetooth.println(out);
   
 }
-void color() {
+void blink() {
   uint8_t r = 250;
 
   led.setColorAt(0, r, 0,0);
