@@ -41,7 +41,7 @@
           center: {lat: 0, lng: -180},
           mapTypeId: 'terrain'
         });
-        var allData = ({{data}});
+        var allData = {{ data | tojson}};
         console.log(allData);
         var flightPlanCoordinates = [
           {lat: 37.772, lng: -122.214},
