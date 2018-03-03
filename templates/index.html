@@ -1,67 +1,105 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Simple Polylines</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-      }
-      /* Sets the Title font and size
-      */
-      #title {
-        height: auto;
-        font: 40px Helvetica;
-        margin-left: 35%;
-        margin-right: 35%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="title"> Our Friccin Map, <i>bish</i> </div>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Beltline</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
     <div id="map"></div>
-    <script>
 
-      // This example creates a 2-pixel-wide red polyline showing the path of
-      // the first trans-Pacific flight between Oakland, CA, and Brisbane,
-      // Australia which was made by Charles Kingsford Smith.
-
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
-          center: {lat: 0, lng: -180},
-          mapTypeId: 'terrain'
-        });
-        var allData = {{ data | tojson}};
-        console.log(allData);
-        var flightPlanCoordinates = [
-          {lat: 37.772, lng: -122.214},
-          {lat: 21.291, lng: -157.821},
-          {lat: -18.142, lng: 178.431},
-          {lat: -27.467, lng: 153.027}
-        ];
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-
-        flightPath.setMap(map);
-      }
-    </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANHM7ycQ-7RGVj-Hkbj60SDlyFQz2nCTU&callback=initMap">
+    src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAR8n1NSCAnouGzRyp1dJy15Oh704K3lA0&libraries=visualization&callback=initMap">
     </script>
-  </body>
+    <script>
+    var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lng:-84.3880 , lat: 33.7490},
+    mapTypeId: 'terrain'
+  });
+
+  // Create a <script> tag and set the USGS URL as the source.
+  // var script = document.createElement('script');
+
+  // JSON OBJECT FROM HARDWARE
+  // script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+  // document.getElementsByTagName('head')[0].appendChild(script);
+
+  var results = {{ data | tojson}};
+  console.log(results);
+
+  var heatmapData = [];
+
+  Object.keys(results).forEach(function(key){
+  
+
+    var latLng = new google.maps.LatLng(results[key].location[0], results[key].location[1])
+    var magnitude = results[key].activity_v;
+
+    var weightedLoc = {
+      location : latLng,
+      weight : magnitude
+    };
+    heatmapData.push(weightedLoc);
+  
+  });
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data:heatmapData,
+    dissipating:true,
+    map: map
+    });
+}
+
+
+function eqfeed_callback(results) {
+  var heatmapData = [];
+  for (var i = 0; i < results.features.length; i++) {
+    var coords = results.features[i].geometry.coordinates;
+    var latLng = new google.maps.LatLng(coords[1], coords[0]);
+    var magnitude = results.features[i].properties.mag;
+    var weightedLoc = {
+      location: latLng,
+      weight: Math.pow(2, magnitude)
+    };
+    heatmapData.push(weightedLoc);
+  }
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data: heatmapData,
+    dissipating: false,
+    map: map
+  });
+}
+
+
+
+
+
+function eqfeed_callback(results) {
+  console.log('callback');
+  var heatmapData = [];
+  for (var i = 0; i < results.features.length; i++) {
+    var coords = results.features[i].geometry.coordinates;
+    var latLng = new google.maps.LatLng(coords[1], coords[0]);
+    heatmapData.push(latLng);
+  }
+  var heatmap = new google.maps.visualization.HeatmapLayer({
+    data: heatmapData,
+    dissipating: false,
+    map: map
+  });
+}
+    </script>
+    <p>
+    	Team SquiggleDoobs
+    </p>
+
+    <div id="main">
+        <svg width="100%" height="740" style="border: 1px solid #777;">
+        </svg>
+    </div>
+</body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
 </html>
