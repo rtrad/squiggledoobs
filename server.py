@@ -11,27 +11,33 @@ app = Flask(__name__)
 agg = {
         1 : {
             'location' : (33.7816899, -84.3683153),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             },
         2 : {
             'location' : (33.7806076, -84.3673886),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             },
         3 : {
             'location' : (33.7800137, -84.3668665),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             },
         4 : {
             'location' : (33.7794260, -84.3664867),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             },
         5 : {
             'location' : (33.7780078, -84.3657849),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             },
         6 : {
             'location' : (33.7744780, -84.3647942),
-            'activity_v' : 0
+            'activity_v' : 0,
+            'count' : 0
             }
     }
 
@@ -46,7 +52,11 @@ def index():
     # recordings = db.recordings.find()
     recordings = db.recordings.find({'timestamp' : {'$gte' : time_lower}})
     for rec in recordings:
-        agg[rec['device_id']]['activity_v'] += rec['activity_v']
+        agg[rec['device_id']]['activity_v'] += rec['activity_v']**2
+        agg[rec['device_id']]['count'] += 1
+        
+    # for dev in agg:
+        # agg[dev]['activity_v'] = agg[dev]['activity_v']/agg[dev]['count']
     # print agg
     data = dumps(agg)
     # data[1]
