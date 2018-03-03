@@ -10,10 +10,17 @@ MeRGBLed led(PORT_3);
 
 MePIRMotionSensor PIRmotion_val(PORT_6);
 
+MeBluetooth bluetooth(PORT_5);
+
+unsigned char table[128] = {0};
+
 bool detected = 0;
 
 void setup() {
-  Serial.begin(9600);
+
+  Serial.begin(115200);
+  bluetooth.begin(115200);    //The factory default baud rate is 115200
+  Serial.println("Bluetooth Start!");
 }
 
 void loop() {
