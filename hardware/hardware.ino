@@ -34,6 +34,27 @@ void loop() {
   Serial.print(detected);
 
   delay(100);
+
+  int readdata = 0,i = 0,count = 0;
+  char outDat;
+  if (bluetooth.available())
+  {
+    while((readdata = bluetooth.read()) != (int)-1)
+    {
+      table[count] = readdata;
+      count++;
+      delay(1);
+    }
+    for(i = 0;i<count;i++)
+    {
+      Serial.write(table[i]);
+    }
+  }
+  if(Serial.available() )
+  {
+    outDat = Serial.read();
+    bluetooth.write(outDat);
+  }
 }
 
 void color() {
