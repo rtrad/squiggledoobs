@@ -32,7 +32,7 @@ function initMap() {
   console.log(results);
 
   var heatmapData = [];
-  var maxMag = 0;
+  var maxMag = 1;
 
   Object.keys(results).forEach(function(key) {
     var latLng = new google.maps.LatLng(results[key].location[0], results[key].location[1])
@@ -73,7 +73,18 @@ function determineColor(mag1, mag2, maxMag) {
     var relativeMag = Math.floor((mag1 + mag2)/(maxMag * 2));
     var redVal = 0x000000 + (0xFF0000 * relativeMag);
     var greenVal = 0x00FF00 - (0x00FF00 * relativeMag);
-    return "#" + (redVal + greenVal).toString();
+    var finalVal = (redVal + greenVal);
+    if (finalVal < 0x010000) {
+        finalVal = "#00" + finalVal.toString(16);
+    } else if (finalVal < 0x100000) {
+        finalVal = "#0" + finalVal.toString(16);
+    } else {
+        finalVal = "#" + finalVal.toString(16);
+    }
+    console.log("finalVal:" + finalVal);
+    console.log("redVal:" + redVal);
+    console.log("greenVal:" + greenVal);
+    return finalVal;
 }
 
 function eqfeed_callback(results) {
