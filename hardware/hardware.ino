@@ -2,9 +2,11 @@
 
 */
 
-#include <Makeblock.h>
+#include <MeOrion.h>
 #include <SoftwareSerial.h>
 #include <Wire.h>
+#include <stdint.h>
+
 
 
 
@@ -25,7 +27,7 @@ void loop() {
 
 void color_loop() {
   
-  for (unit8_t t = 0; t<ledCount; t++) {
+  for (uint8_t t = 0; t<ledCount; t++) {
     uint8_t red = 64 * (1 + sin(t/2.0 + j/4.0));
     uint8_t green = 64 * (1 + sin(t/2.0 + f/9.0 +2.1));
     uint8_t blue = 64 * (1 + sin(t/2.0 + k/14.0 +4.2));
