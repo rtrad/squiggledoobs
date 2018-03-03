@@ -46,7 +46,6 @@ agg = {
 def index():
     # time_upper = (datetime.datetime.now() - datetime.datetime(1970,1,1))
     # time_lower = (time_upper - datetime.timedelta(minutes = 10)).total_seconds()
-    
     time_lower = 1520084629.944
 
     # recordings = db.recordings.find()

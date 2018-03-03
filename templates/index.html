@@ -37,12 +37,16 @@
       console.log(results);
 
       var heatmapData = [];
+      var maxMag = 1;
 
       Object.keys(results).forEach(function(key){
 
 
         var latLng = new google.maps.LatLng(results[key].location[0], results[key].location[1])
         var magnitude = results[key].activity_v;
+        if (maxMag < magnitude) {
+                maxMag = magnitude;
+            }
 
         var weightedLoc = {
           location : latLng,
@@ -51,12 +55,9 @@
         heatmapData.push(weightedLoc);
 
       });
-      heatmap = new google.maps.visualization.HeatmapLayer({
-        data:heatmapData,
-        dissipating:true,
-        radius:100,
-        map: map
-        });
+
+      heatmapView(heatmapData, map);
+
 
       // Create the DIV to hold the control and call the CenterControl()
         // constructor passing in this DIV.
@@ -85,41 +86,48 @@
 
     }
 
-    function eqfeed_callback(results) {
-      var heatmapData = [];
-      for (var i = 0; i < results.features.length; i++) {
-        var coords = results.features[i].geometry.coordinates;
-        var latLng = new google.maps.LatLng(coords[1], coords[0]);
-        var magnitude = results.features[i].properties.mag;
-        var weightedLoc = {
-          location: latLng,
-          weight: Math.pow(2, magnitude)
-        };
-        heatmapData.push(weightedLoc);
-      }
-      var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmapData,
-        dissipating: false,
-        map: map
-      });
+
+
+    function heatmapView(heatmapData, map) {
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data:heatmapData,
+          dissipating:true,
+          map: map
+          });
     }
 
-    function eqfeed_callback(results) {
-      console.log('callback');
-      var heatmapData = [];
-      for (var i = 0; i < results.features.length; i++) {
-        var coords = results.features[i].geometry.coordinates;
-        var latLng = new google.maps.LatLng(coords[1], coords[0]);
-        heatmapData.push(latLng);
-      }
-      var heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmapData,
-        dissipating: false,
-        map: map
-      });
+    function trafficView(heatmapData, map) {
+        var lines = [];
+        for (var i = 0; i < heatmapData.length - 1; ++i) {
+          lines.push(new google.maps.Polyline({
+              path: [heatmapData[i].location, heatmapData[i + 1].location],
+              strokeColor: determineColor(heatmapData[i].weight, heatmapData[i + 1].weight, maxMag), //add in function to determine color based on magnitude
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+          }));
+        }
+        for (var i = 0; i < lines.length; ++i) {
+          lines[i].setMap(map);
+        }
     }
 
-
+    function determineColor(mag1, mag2, maxMag) {
+        var relativeMag = Math.floor((mag1 + mag2)/(maxMag * 2));
+        var redVal = 0x000000 + (0xFF0000 * relativeMag);
+        var greenVal = 0x00FF00 - (0x00FF00 * relativeMag);
+        var finalVal = (redVal + greenVal);
+        if (finalVal < 0x010000) {
+            finalVal = "#00" + finalVal.toString(16);
+        } else if (finalVal < 0x100000) {
+            finalVal = "#0" + finalVal.toString(16);
+        } else {
+            finalVal = "#" + finalVal.toString(16);
+        }
+        console.log("finalVal:" + finalVal);
+        console.log("redVal:" + redVal);
+        console.log("greenVal:" + greenVal);
+        return finalVal;
+    }
 
 
 
