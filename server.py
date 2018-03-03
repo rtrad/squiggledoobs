@@ -35,12 +35,11 @@ def index():
     # print agg
     data = dumps(agg)
     # data[1]
-    
-    print data[1]
+
+    print (data[1])
     return render_template('index.html', data=agg)
-        
+
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
